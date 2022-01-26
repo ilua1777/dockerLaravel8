@@ -47,5 +47,5 @@ After application starting you can open [127.0.0.1:5454](http://127.0.0.1:5454/)
 Just execute into your terminal next commands:
 
 ```bash
-$ git clone  ./laravel-project && cd $_
+$ git clone https://github.com/ilua1777/dockerLaravel8.git ./laravel-project && cd $_
 ```
