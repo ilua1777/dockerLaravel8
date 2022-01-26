@@ -1,0 +1,87 @@
+version: '3.7'
+services:
+  &app-service app:
+    build:
+      args:
+        user: ilya
+        uid: 1000
+      context: ./docker/app/
+      dockerfile: Dockerfile
+    image: dev.dvor24.local
+    container_name: dev.dvor24.local-app
+    user: root
+    hostname: *app-service
+    restart: always
+    working_dir: /var/www/dev.dvor24.local
+    volumes:
+      - ./src:/var/www/dev.dvor24.local:rw
+      - ./docker/app/etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./docker/app/etc/php/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./pgadmin:/var/www/pgadmin
+    depends_on:
+      - pgsql
+    networks:
+      # - app-network
+      static-network:
+        ipv4_address: 172.25.0.10
+      
+  &nodename node:
+    image: node:14.18-alpine3.14
+    container_name: dev.dvor24.local-node
+    restart: on-failure
+    hostname: *nodename
+    volumes:
+      - ./src:/var/www/dev.dvor24.local:rw
+    working_dir: /var/www/dev.dvor24.local
+    networks:
+    # - app-network
+      static-network:
+        ipv4_address: 172.25.0.2
+
+  &pgsqlname pgsql:
+    image: postgres:9.6.10-alpine
+    container_name: dev.dvor24.local-pgsql
+    restart: always
+    hostname: *pgsqlname
+    environment: 
+      POSTGRES_DB: dev
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: 123
+    volumes:
+      - pg-data:/var/lib/postgresql/data:rw
+      - ./docker/pgsql/:/var/database
+    networks:
+      # - app-network
+      static-network:
+        ipv4_address: 172.25.0.3
+
+  &nginxname nginx:
+    image: nginx:1.17-alpine
+    container_name: dev.dvor24.local-nginx
+    restart: always
+    hostname: *nginxname
+    ports:
+      - 127.0.0.1:8080:80
+      - 127.0.0.1:5454:8081
+    volumes:
+      - ./src:/var/www/dev.dvor24.local
+      - ./pgadmin:/var/www/pgadmin
+      - ./docker/nginx:/etc/nginx/conf.d
+      - ./logNginx:/var/log/nginx/
+    networks:
+      static-network:
+        ipv4_address: 172.25.0.4
+      # - app-network
+
+networks:
+  # app-network:
+  #   driver: bridge
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+
+volumes:
+  pg-data:
+    driver: local
+  
