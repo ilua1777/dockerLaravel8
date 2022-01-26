@@ -63,6 +63,7 @@ services:
     ports:
       - 127.0.0.1:8080:80
       - 127.0.0.1:5454:8081
+      - 127.0.0.1:3030:3000
     volumes:
       - ./src:/var/www/dev.dvor24.local
       - ./pgadmin:/var/www/pgadmin
