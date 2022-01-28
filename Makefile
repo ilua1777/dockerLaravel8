@@ -16,7 +16,8 @@ PGSQL_CONTAINER_NAME := pgsql
 .DEFAULT_GOAL := help
 
 help: ## Show this help
-	@findstr /v "findstr" help.txt
+#	@findstr /v "findstr" help.txt  #command for windows
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 # --- [ Application ] -------------------------------------------------------------------------------------------------
 
 build: ## Application - build Docker image locally
