@@ -56,3 +56,9 @@ ebash: up ## Full Application Build
 	docker-compose exec app /var/www/build/build_npm.sh
 	docker-compose run --rm "$(NODE_CONTAINER_NAME)" npm run build
 	docker-compose exec app /var/www/build/build_php.sh
+	
+npm: ## allows you to enter an arbitrary command for npm(make npm command="npm install")
+	docker-compose run --rm "$(NODE_CONTAINER_NAME)" $(command)
+
+app-c: ## allows you to enter an arbitrary command for container app(make app-c command="php artisan optimize")
+	docker-compose run --rm "$(NODE_CONTAINER_NAME)" $(command)
