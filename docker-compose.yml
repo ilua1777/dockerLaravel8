@@ -18,6 +18,7 @@ services:
       - ./docker/app/etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ./docker/app/etc/php/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./pgadmin:/var/www/pgadmin
+      - ./docker/app/build:/var/www/build
     depends_on:
       - pgsql
     networks:
@@ -63,7 +64,7 @@ services:
     ports:
       - 127.0.0.1:8080:80
       - 127.0.0.1:5454:8081
-      - 127.0.0.1:3030:3000
+      - 127.0.0.1:3000:3000
     volumes:
       - ./src:/var/www/dev.dvor24.local
       - ./pgadmin:/var/www/pgadmin

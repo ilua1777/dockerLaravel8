@@ -13,3 +13,4 @@ dump_bd			Running a script that makes a database dump and loads it locally
 install			Install application dependencies into application container
 watch			Start watching assets for changes (node)
 init			Make full application initialization
+ebash                   Full Application Build

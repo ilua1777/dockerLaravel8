@@ -42,7 +42,7 @@ dump_bd: up ## Running a script that makes a database dump and loads it locally
 	docker-compose exec "$(PGSQL_CONTAINER_NAME)" /var/database/update_database.sh
 
 install: up dump_bd ## Install application dependencies into application container
-	docker-compose exec "$(APP_CONTAINER_NAME)" composer install
+	docker-compose exec "$(APP_CONTAINER_NAME)" composer update
 	docker-compose run --rm "$(NODE_CONTAINER_NAME)" npm install
 
 watch: up ## Start watching assets for changes (node)
@@ -50,3 +50,8 @@ watch: up ## Start watching assets for changes (node)
 
 init: up ## Make full application initialization
 	docker-compose run --rm "$(NODE_CONTAINER_NAME)" npm run build
+
+ebash: up ## Full Application Build
+	docker-compose exec app /var/www/build/build_npm.sh
+	docker-compose run --rm "$(NODE_CONTAINER_NAME)" npm run build
+	docker-compose exec app /var/www/build/build_php.sh
