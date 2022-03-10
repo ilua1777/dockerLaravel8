@@ -61,4 +61,4 @@ npm: ## allows you to enter an arbitrary command for npm(make npm command="npm i
 	docker-compose run --rm "$(NODE_CONTAINER_NAME)" $(command)
 
 app-c: ## allows you to enter an arbitrary command for container app(make app-c command="php artisan optimize")
-	docker-compose run --rm "$(NODE_CONTAINER_NAME)" $(command)
+	docker-compose run --rm "$(APP_CONTAINER_NAME)" $(command)
