@@ -48,6 +48,17 @@ services:
       static-network:
         ipv4_address: 172.25.0.8
 
+  &queue-service queue:
+    <<: *app-service-template
+    container_name: dev.dvor24.local-queue
+    restart: always
+    hostname: *queue-service
+    command: php /var/www/dev.dvor24.local/artisan queue:work
+    networks:
+      # - app-network
+      static-network:
+        ipv4_address: 172.25.0.5
+
   &nodename node:
     image: node:14.18-alpine3.14
     container_name: dev.dvor24.local-node
