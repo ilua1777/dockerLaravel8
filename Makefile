@@ -27,7 +27,7 @@ build: ## Application - build Docker image locally
 
 ---------------: ## ---------------
 
-up: ## Start all containers (in background) for development
+up: down ## Start all containers (in background) for development
 	docker-compose up -d
 
 down: ## Stop all started for development containers

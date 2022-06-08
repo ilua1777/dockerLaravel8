@@ -36,7 +36,18 @@ services:
       # - app-network
       static-network:
         ipv4_address: 172.25.0.9
-      
+  
+  &scheduler-service scheduler:
+    <<: *app-service-template
+    container_name: dev.dvor24.local-scheduler
+    restart: always
+    hostname: *scheduler-service
+    command: php /var/www/dev.dvor24.local/artisan schedule:work
+    networks:
+      # - app-network
+      static-network:
+        ipv4_address: 172.25.0.8
+
   &nodename node:
     image: node:14.18-alpine3.14
     container_name: dev.dvor24.local-node
@@ -73,9 +84,9 @@ services:
     restart: always
     hostname: *nginxname
     ports:
-      - 127.0.0.1:8080:80
+      - 0.0.0.0:8080:80
       - 127.0.0.1:5454:8081
-      - 127.0.0.1:3000:3000
+      - 0.0.0.0:3000:3000
       - 127.0.0.1:6001:6001
     volumes:
       - ./src:/var/www/dev.dvor24.local
