@@ -53,7 +53,7 @@ services:
     container_name: dev.dvor24.local-queue
     restart: always
     hostname: *queue-service
-    command: php /var/www/dev.dvor24.local/artisan queue:work
+    command: php /var/www/dev.dvor24.local/artisan queue:work --tries=3
     networks:
       # - app-network
       static-network:
