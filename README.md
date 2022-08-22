@@ -14,11 +14,11 @@ For local application starting (for development) make sure that you have locally
 
 This application uses next services:
 
-- PHP-FPM7.4
-- PostgreSQL
+- PHP-FPM8.1
+- PostgreSQL13.7
 - PgAdmin
 - NGINX
-- NODE
+- NODE16.6
 
 Declaration of all services can be found into `./docker-compose.yml` file.
 
@@ -40,7 +40,7 @@ Command signature | Description
 `make init` | Make **full** application initialization
 
 After application starting you can open [127.0.0.1:8080](http://127.0.0.1:8080/) in your browser.
-After application starting you can open [127.0.0.1:5454](http://127.0.0.1:5454/) in your browser from PhpPgAdmin.
+After application starting you can open [127.0.0.1:5050](http://127.0.0.1:5050/) in your browser from PhpPgAdmin.
 
 ### Fast application starting
 

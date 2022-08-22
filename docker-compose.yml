@@ -3,7 +3,7 @@ services:
   &app-service app: &app-service-template
     build:
       args:
-        user: ilya
+        user: root
         uid: 1000
       context: ./docker/app/
       dockerfile: Dockerfile
@@ -17,7 +17,6 @@ services:
       - ./src:/var/www/dev.dvor24.local:rw
       - ./docker/app/etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ./docker/app/etc/php/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
-      - ./pgadmin:/var/www/pgadmin
       - ./docker/app/build:/var/www/build
     depends_on:
       - pgsql
@@ -32,11 +31,13 @@ services:
     restart: always
     hostname: *socket-service
     command: php /var/www/dev.dvor24.local/artisan websockets:serve
+    ports:
+      - 127.0.0.1:6001:6001
     networks:
       # - app-network
       static-network:
         ipv4_address: 172.25.0.9
-  
+      
   &scheduler-service scheduler:
     <<: *app-service-template
     container_name: dev.dvor24.local-scheduler
@@ -58,9 +59,9 @@ services:
       # - app-network
       static-network:
         ipv4_address: 172.25.0.5
-
+    
   &nodename node:
-    image: node:14.18-alpine3.14
+    image: node:16.16-alpine
     container_name: dev.dvor24.local-node
     restart: on-failure
     hostname: *nodename
@@ -68,26 +69,43 @@ services:
       - ./src:/var/www/dev.dvor24.local:rw
     working_dir: /var/www/dev.dvor24.local
     networks:
-    # - app-network
+      # - app-network
       static-network:
         ipv4_address: 172.25.0.2
 
   &pgsqlname pgsql:
-    image: postgres:9.6.10-alpine
-    container_name: dev.dvor24.local-pgsql
+    image: postgres:13.7-alpine
+    container_name: &pgsqlhost dev.dvor24.local-pgsql
     restart: always
     hostname: *pgsqlname
     environment: 
+      POSTGRES_PASSWORD: 123
       POSTGRES_DB: dev
       POSTGRES_USER: dev
-      POSTGRES_PASSWORD: 123
     volumes:
-      - pg-data:/var/lib/postgresql/data:rw
+      - pg-data-admin:/var/lib/postgresql/data:rw
       - ./docker/pgsql/:/var/database
     networks:
       # - app-network
       static-network:
         ipv4_address: 172.25.0.3
+
+  &phppgadmin phppgadmin:
+    image: bitnami/phppgadmin:latest
+    container_name: dev.dvor24.local-phppgadmin
+    restart: always
+    hostname: *pgsqlname
+    ports:
+      - 0.0.0.0:5050:8080
+    environment: 
+      DATABASE_ENABLE_EXTRA_LOGIN_SECURITY: yes
+      DATABASE_HOST: *pgsqlhost
+    volumes:
+      - ./docker/pgsql/phppgadmin_data:/bitnami
+    networks:
+      # - app-network
+      static-network:
+        ipv4_address: 172.25.0.16
 
   &nginxname nginx:
     image: nginx:1.17-alpine
@@ -96,12 +114,9 @@ services:
     hostname: *nginxname
     ports:
       - 0.0.0.0:8080:80
-      - 127.0.0.1:5454:8081
-      - 0.0.0.0:3000:3000
-      - 127.0.0.1:6001:6001
+      - 0.0.0.0:5173:5173
     volumes:
       - ./src:/var/www/dev.dvor24.local
-      - ./pgadmin:/var/www/pgadmin
       - ./docker/nginx:/etc/nginx/conf.d
       - ./logNginx:/var/log/nginx/
     networks:
@@ -118,6 +133,6 @@ networks:
         - subnet: 172.25.0.0/16
 
 volumes:
-  pg-data:
+  pg-data-admin:
     driver: local
   

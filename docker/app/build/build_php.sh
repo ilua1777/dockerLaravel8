@@ -9,7 +9,7 @@ else
 	php artisan storage:link
 fi
 
-version=$(grep -i 'VITE_APP_VERSION=' $PWD/.env | grep -oP "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}")
+version=$(grep -i 'APP_VERSION=' $PWD/.env | grep -oP "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}")
 
 read -p "Are you sure you want to delete all the old versions? Current version - $version. (y/n) " accept
 if [[ $accept == 'y' || -z $accept ]]
