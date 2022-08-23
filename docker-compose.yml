@@ -3,7 +3,7 @@ services:
   &app-service app: &app-service-template
     build:
       args:
-        user: root
+        user: admin
         uid: 1000
       context: ./docker/app/
       dockerfile: Dockerfile
@@ -98,7 +98,7 @@ services:
     ports:
       - 0.0.0.0:5050:8080
     environment: 
-      DATABASE_ENABLE_EXTRA_LOGIN_SECURITY: yes
+      DATABASE_ENABLE_EXTRA_LOGIN_SECURITY: 1
       DATABASE_HOST: *pgsqlhost
     volumes:
       - ./docker/pgsql/phppgadmin_data:/bitnami

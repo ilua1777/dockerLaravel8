@@ -40,7 +40,7 @@ shell: up ## Start shell into application container
 	docker-compose exec "$(APP_CONTAINER_NAME)" /bin/sh
 
 dump_bd: up ## Running a script that makes a database dump and loads it locally
-	docker-compose exec "$(PGSQL_CONTAINER_NAME)" /var/database/update_database.sh
+	docker-compose exec "$(PGSQL_CONTAINER_NAME)" bash /var/database/update_database.sh
 
 install: up dump_bd ## Install application dependencies into application container
 	docker-compose exec "$(APP_CONTAINER_NAME)" composer update
